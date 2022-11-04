@@ -22,8 +22,6 @@ const defaultArray = [{ value: '', label: '' }]
 const AddPost = () => {
   const [pickerItems, setPickerItems] = React.useState<Item[]>([])
   const [selectedItems, setSelectedItems] = React.useState<Item[]>([])
-  console.log({ pickerItems })
-  console.log({selectedItems})
 
   const handleCreateItem = (item: Item) => {
     setPickerItems((curr) => [...curr, { ...item, custom: true }])
@@ -40,7 +38,6 @@ const AddPost = () => {
     e.preventDefault()
     const $form = e.currentTarget
     const values = Object.fromEntries(new FormData($form))
-    console.log({ values })
     //    ^?
     const input: Input = {
       title: values.title as string,
@@ -61,7 +58,6 @@ const AddPost = () => {
 
   const tagQuery = trpc.tag.list.useQuery({})
   const { data } = tagQuery
-  console.log({ data })
 
   const addPost = trpc.post.add.useMutation({
     async onSuccess() {
@@ -70,7 +66,6 @@ const AddPost = () => {
   })
 
   const router = useRouter()
-  console.log(tagQuery.isLoading)
 
   useEffect(() => {
     const fetchedTags = tagQuery.data?.map((item) => ({

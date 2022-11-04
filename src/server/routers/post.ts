@@ -97,13 +97,19 @@ export const postRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      const formattedtTagsForPrismaCreate = input.tags.map((item) => ({
-        tag: {
-          create: item.custom
-            ? { name: item.value }
-            : { name: item.value, id: item.label }
-        }
-      }))
+      const formattedtTagsForPrismaCreate = input.tags.map((item) => {
+        return item.custom
+          ? {
+              tag: {
+                create: { name: item.label }
+              }
+            }
+          : {
+              tag: {
+                connect: { id: item.value }
+              }
+            }
+      })
 
       const post = await prisma.post.create({
         data: {

@@ -19,5 +19,25 @@ model Post {
   // https://trpc.io/docs/data-transformers
   // This is unique so it can be used for cursor-based pagination
   createdAt DateTime @default(now())
+  
   updatedAt DateTime @default(now()) @updatedAt
+  tags TagsOnPosts[]
+}
+
+model Tag {
+  id String @id @default(uuid())
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  posts TagsOnPosts[]
+}
+
+model TagsOnPosts {
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     String // relation scalar field (used in the `@relation` attribute above)
+  tag   Tag @relation(fields: [tagId], references: [id])
+  tagId String // relation scalar field (used in the `@relation` attribute above)
+
+
+  @@id([postId, tagId])
 }

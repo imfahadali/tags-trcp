@@ -2,16 +2,16 @@ import { test, expect } from '@playwright/test'
 
 test.setTimeout(35e3)
 
-test('go to /', async ({ page }) => {
-  await page.goto('/')
+// test('go to /', async ({ page }) => {
+//   await page.goto('/')
 
-  await page.waitForSelector(`text=Simple blog`)
-})
+//   await page.waitForSelector(`text=Simple blog`)
+// })
 
-test('test 404', async ({ page }) => {
-  const res = await page.goto('/post/not-found')
-  expect(res?.status()).toBe(404)
-})
+// test('test 404', async ({ page }) => {
+//   const res = await page.goto('/post/not-found')
+//   expect(res?.status()).toBe(404)
+// })
 
 test('add a post', async ({ page, browser }) => {
   const nonce = `${Math.random()}`
@@ -23,7 +23,7 @@ test('add a post', async ({ page, browser }) => {
   await page.waitForLoadState('networkidle')
   await page.reload()
 
-  expect(await page.content()).toContain(nonce)
+  expect(await page.content()).toContain(nonce) 
 
   const ssrContext = await browser.newContext({
     javaScriptEnabled: false
@@ -32,4 +32,9 @@ test('add a post', async ({ page, browser }) => {
   await ssrPage.goto('/')
 
   expect(await ssrPage.content()).toContain(nonce)
+})
+
+
+test('add a tag', async ({page, browser})=>{
+  console.log(page)
 })

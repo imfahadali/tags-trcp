@@ -5,8 +5,9 @@
 import { t } from '../trpc'
 import { Prisma } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
-import { z } from 'zod'
+import { string, z } from 'zod'
 import { prisma } from '../prisma'
+import { TagSharp } from '@mui/icons-material'
 
 /**
  * Default selector for Post.
@@ -34,8 +35,7 @@ export const postRouter = t.router({
       const { cursor } = input
 
       const items = await prisma.post.findMany({
-        select: defaultPostSelect,
-
+        include: { tags: { include: { tag: true } } },
         take: limit + 1,
         where: {},
         cursor: cursor
@@ -71,7 +71,7 @@ export const postRouter = t.router({
       const { id } = input
       const post = await prisma.post.findUnique({
         where: { id },
-        select: defaultPostSelect
+        include: { tags: { include: { tag: true } } }
       })
       if (!post) {
         throw new TRPCError({
@@ -86,12 +86,33 @@ export const postRouter = t.router({
       z.object({
         id: z.string().uuid().optional(),
         title: z.string().min(1).max(32),
+        tags: z.array(
+          z.object({
+            label: z.string(),
+            value: z.string(),
+            custom: z.boolean().optional()
+          })
+        ),
         text: z.string().min(1)
       })
     )
     .mutation(async ({ input }) => {
+      const formattedtTagsForPrismaCreate = input.tags.map((item) => ({
+        tag: {
+          create: item.custom
+            ? { name: item.value }
+            : { name: item.value, id: item.label }
+        }
+      }))
+
       const post = await prisma.post.create({
-        data: input,
+        data: {
+          title: input.title,
+          text: input.text,
+          tags: {
+            create: formattedtTagsForPrismaCreate
+          }
+        },
         select: defaultPostSelect
       })
       return post

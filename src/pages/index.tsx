@@ -13,8 +13,10 @@ import {
   Input,
   Textarea
 } from '@chakra-ui/react'
-import { Link } from '~/components/Link'
+// import { Link } from '~/components/Link'
 import { useRouter } from 'next/router'
+import Tag from '~/components/Tag'
+import Link from 'next/link'
 
 const IndexPage: NextPageWithLayout = () => {
   const utils = trpc.useContext()
@@ -53,33 +55,39 @@ const IndexPage: NextPageWithLayout = () => {
           {postsQuery.status === 'loading' && '(loading)'}
         </Heading>
 
-        <Link href={`/add-post`} ml="auto">
+        <Link href={`/add-post`}>
           <Button colorScheme="blue">Add a post</Button>
         </Link>
       </Flex>
 
       {postsQuery.data?.pages.map((page, index) => (
         <Fragment key={page.items[0]?.id || index}>
-          {page.items.map((item) => (
-            <article key={item.id}>
-              <Flex
-                bg="teal"
-                px="10"
-                rounded={7}
-                p={4}
-                m={10}
-                color="white"
-                justify="space-between"
-                align="center"
-              >
-                <Heading size="md">{item.title}</Heading>
-
-                <Link href={`/post/${item.id}`}>
-                  <Button colorScheme="teal">View more</Button>
-                </Link>
-              </Flex>
-            </article>
-          ))}
+          {page.items.map((item) => {
+            return (
+              <article key={item.id}>
+                <Flex
+                  bg="teal"
+                  px="10"
+                  rounded={7}
+                  p={4}
+                  m={10}
+                  color="white"
+                  justify="flex-end"
+                  align="center"
+                >
+                  <Heading size="md" marginRight={'auto'}>
+                    {item.title}
+                  </Heading>
+                  {item?.tags.map((item: any) => (
+                    <Tag tag={item.tag} color="#FD5901" />
+                  ))}
+                  <Link href={`/post/${item.id}`}>
+                    <Button colorScheme="teal">View more</Button>
+                  </Link>
+                </Flex>
+              </article>
+            )
+          })}
         </Fragment>
       ))}
     </>

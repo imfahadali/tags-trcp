@@ -29,7 +29,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.12",
-    "@prisma/client": "^4.4.0",
+    "@prisma/client": "^4.11.0",
     "@tanstack/react-query": "^4.9.0",
     "@trpc/client": "^10.0.0-proxy-beta.13",
     "@trpc/next": "^10.0.0-proxy-beta.13",
